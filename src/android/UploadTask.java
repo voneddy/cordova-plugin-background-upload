@@ -183,7 +183,13 @@ public final class UploadTask extends Worker {
                 request = createRequest();
             } catch (FileNotFoundException e) {
                 FileTransferBackground.logMessageError("doWork: File not found !", e);
-                if(fileStream != null) { fileStream.close() }
+                if(fileStream != null) {
+                    try {
+                        fileStream.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 return Result.success(new Data.Builder()
                         .putString(KEY_OUTPUT_ID, id)
                         .putBoolean(KEY_OUTPUT_IS_ERROR, true)
@@ -238,7 +244,13 @@ public final class UploadTask extends Worker {
                             .build();
                     AckDatabase.getInstance(getApplicationContext()).pendingUploadDao().markAsUploaded(nextPendingUpload.getId());
                     AckDatabase.getInstance(getApplicationContext()).uploadEventDao().insert(new UploadEvent(id, data));
-                    if(fileStream != null) { fileStream.close() }
+                    if(fileStream != null) {
+                        try {
+                            fileStream.close();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                     return Result.success(data);
                 } else {
                     // But if it was not it must be a connectivity problem or
@@ -293,7 +305,13 @@ public final class UploadTask extends Worker {
         }
 
         FileTransferBackground.workerIsStarted = false;
-        if(fileStream != null) { fileStream.close() }
+        if(fileStream != null) {
+            try {
+                fileStream.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         return Result.success();
     }
@@ -358,7 +376,13 @@ public final class UploadTask extends Worker {
         }
 
         Uri fileUri = Uri.parse(filepath);
-        if(fileStream != null) { fileStream.close() }
+        if(fileStream != null) {
+            try {
+                fileStream.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         fileStream = new FileInputStream(getApplicationContext().getContentResolver().openFileDescriptor(fileUri, "r").getFileDescriptor());
         FileChannel channel = fileStream.getChannel();
         long fileSize = 0;

@@ -13,6 +13,7 @@ import androidx.work.WorkerParameters;
 
 import java.io.File;
 import java.io.FileInputStream;
+import android.os.ParcelFileDescriptor.AutoCloseInputStream;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -91,9 +92,7 @@ public final class UploadTask extends Worker {
 
     private PendingUpload nextPendingUpload;
 
-    private FileInputStream fileStream;
-
-    private FileDescriptor fileDescriptor;
+    private AutoCloseInputStream fileStream;
 
     private static boolean firstMigrationFlag = false;
 
@@ -386,8 +385,8 @@ public final class UploadTask extends Worker {
                 throw new RuntimeException(ioException);
             }
         }
-        fileDescriptor = getApplicationContext().getContentResolver().openFileDescriptor(fileUri, "r").getFileDescriptor();
-        fileStream = new FileInputStream(fileDescriptor);
+        fileDescriptor = getApplicationContext().getContentResolver().openFileDescriptor(fileUri, "r");
+        fileStream = new AutoCloseInputStream(fileDescriptor);
         FileChannel channel = fileStream.getChannel();
         long fileSize = 0;
         try {

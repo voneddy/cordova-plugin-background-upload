@@ -90,6 +90,8 @@ public final class UploadTask extends Worker {
 
     private PendingUpload nextPendingUpload;
 
+    private FileInputStream fileStream;
+
     private static boolean firstMigrationFlag = false;
 
     public UploadTask(@NonNull Context context, @NonNull WorkerParameters workerParams) {
@@ -181,6 +183,7 @@ public final class UploadTask extends Worker {
                 request = createRequest();
             } catch (FileNotFoundException e) {
                 FileTransferBackground.logMessageError("doWork: File not found !", e);
+                if(fileStream != null) { fileStream.close() }
                 return Result.success(new Data.Builder()
                         .putString(KEY_OUTPUT_ID, id)
                         .putBoolean(KEY_OUTPUT_IS_ERROR, true)
@@ -235,6 +238,7 @@ public final class UploadTask extends Worker {
                             .build();
                     AckDatabase.getInstance(getApplicationContext()).pendingUploadDao().markAsUploaded(nextPendingUpload.getId());
                     AckDatabase.getInstance(getApplicationContext()).uploadEventDao().insert(new UploadEvent(id, data));
+                    if(fileStream != null) { fileStream.close() }
                     return Result.success(data);
                 } else {
                     // But if it was not it must be a connectivity problem or
@@ -289,6 +293,7 @@ public final class UploadTask extends Worker {
         }
 
         FileTransferBackground.workerIsStarted = false;
+        if(fileStream != null) { fileStream.close() }
 
         return Result.success();
     }
@@ -353,7 +358,8 @@ public final class UploadTask extends Worker {
         }
 
         Uri fileUri = Uri.parse(filepath);
-        FileInputStream fileStream = new FileInputStream(getApplicationContext().getContentResolver().openFileDescriptor(fileUri, "r").getFileDescriptor());
+        if(fileStream != null) { fileStream.close() }
+        fileStream = new FileInputStream(getApplicationContext().getContentResolver().openFileDescriptor(fileUri, "r").getFileDescriptor());
         FileChannel channel = fileStream.getChannel();
         long fileSize = 0;
         try {

@@ -186,8 +186,8 @@ public final class UploadTask extends Worker {
                 if(fileStream != null) {
                     try {
                         fileStream.close();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                    } catch (IOException ioException) {
+                        throw new RuntimeException(ioException);
                     }
                 }
                 return Result.success(new Data.Builder()
@@ -247,8 +247,8 @@ public final class UploadTask extends Worker {
                     if(fileStream != null) {
                         try {
                             fileStream.close();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                        } catch (IOException ioException) {
+                            throw new RuntimeException(ioException);
                         }
                     }
                     return Result.success(data);
@@ -308,8 +308,8 @@ public final class UploadTask extends Worker {
         if(fileStream != null) {
             try {
                 fileStream.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (IOException ioException) {
+                throw new RuntimeException(ioException);
             }
         }
 
@@ -379,8 +379,8 @@ public final class UploadTask extends Worker {
         if(fileStream != null) {
             try {
                 fileStream.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (IOException ioException) {
+                throw new RuntimeException(ioException);
             }
         }
         fileStream = new FileInputStream(getApplicationContext().getContentResolver().openFileDescriptor(fileUri, "r").getFileDescriptor());
@@ -388,8 +388,8 @@ public final class UploadTask extends Worker {
         long fileSize = 0;
         try {
             fileSize = channel.size();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException ioException) {
+            throw new RuntimeException(ioException);
         }
 
         ProgressRequestBody fileRequestBody = new ProgressRequestBody(mediaType, fileSize, fileStream, this::handleProgress);

@@ -13,6 +13,7 @@ import androidx.work.WorkerParameters;
 
 import java.io.File;
 import java.io.FileInputStream;
+import android.os.ParcelFileDescriptor;
 import android.os.ParcelFileDescriptor.AutoCloseInputStream;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
@@ -385,7 +386,7 @@ public final class UploadTask extends Worker {
                 throw new RuntimeException(ioException);
             }
         }
-        fileDescriptor = getApplicationContext().getContentResolver().openFileDescriptor(fileUri, "r");
+        ParcelFileDescriptor fileDescriptor = getApplicationContext().getContentResolver().openFileDescriptor(fileUri, "r");
         fileStream = new AutoCloseInputStream(fileDescriptor);
         FileChannel channel = fileStream.getChannel();
         long fileSize = 0;

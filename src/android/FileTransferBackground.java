@@ -153,9 +153,10 @@ public class FileTransferBackground extends CordovaPlugin {
 
     private void initManager(String options, final CallbackContext callbackContext) throws IllegalStateException {
         if (this.ready) {
-            throw new IllegalStateException("initManager was called twice");
+            this.uploadCallback = callbackContext;
+            logMessage("initManager was called twice");
+            return;
         }
-
         try {
             final JSONObject settings = new JSONObject(options);
             ccUpload = settings.getInt("parallelUploadsLimit");

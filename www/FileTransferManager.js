@@ -50,17 +50,15 @@ FileTransferManager.prototype.startUpload = function (payload) {
   }
 
   var self = this;
-  if (payload.filePath.includes("content://") || payload.filePath.includes("file://")) {
-    // android
-    exec(self.callback, null, 'FileTransferBackground', 'startUpload', [payload])
-  } else {
-    // ios
+  if (payload.platform === "ios") {
     window.resolveLocalFileSystemURL(payload.filePath, function (entry) {
       payload.filePath = new URL(entry.toURL()).pathname.replace(/^\/local-filesystem/, '')
       exec(self.callback, null, 'FileTransferBackground', 'startUpload', [payload])
     }, function () {
       self.callback({ id: payload.id, state: 'FAILED', error: 'File not found: ' + payload.filePath })
     })
+  } else {
+      exec(self.callback, null, 'FileTransferBackground', 'startUpload', [payload])
   }
 }
 

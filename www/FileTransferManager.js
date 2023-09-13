@@ -50,8 +50,7 @@ FileTransferManager.prototype.startUpload = function (payload) {
   }
 
   var self = this;
-  var urlScheme = payload.filePath.split("://")[0];
-  if (urlScheme === "content") {
+  if (payload.filePath.includes("content://") || payload.filePath.includes("file://")) {
     // android
     exec(self.callback, null, 'FileTransferBackground', 'startUpload', [payload])
   } else {

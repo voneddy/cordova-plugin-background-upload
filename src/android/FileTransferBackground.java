@@ -197,11 +197,14 @@ public class FileTransferBackground extends CordovaPlugin {
         // Can't use observeForever anywhere else than the main thread
         cordova.getActivity().runOnUiThread(() -> {
             
-            final Configuration myConfig = new Configuration.Builder()
-            .setMinimumLoggingLevel(android.util.Log.INFO)
-            .build();
-            // initialize WorkManager
-            WorkManager.initialize(cordova.getContext(), myConfig);
+            if(!WorkManager.isInitialized()) {
+                final Configuration myConfig = new Configuration.Builder()
+                    .setMinimumLoggingLevel(android.util.Log.INFO)
+                    .build();
+
+                // initialize WorkManager
+                WorkManager.initialize(cordova.getContext(), myConfig);
+            }
             
             // Listen for upload progress
             WorkManager.getInstance(cordova.getContext())

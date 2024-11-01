@@ -241,8 +241,6 @@ public final class UploadTask extends Worker {
                         .putBoolean(KEY_OUTPUT_IS_ERROR, true)
                         .putString(KEY_OUTPUT_FAILURE_REASON, "User cancelled")
                         .putBoolean(KEY_OUTPUT_FAILURE_CANCELED, true)
-                        .putLong(KEY_OUTPUT_UPLOAD_START_TIME, startTime)
-                        .putLong(KEY_OUTPUT_UPLOAD_FINISH_TIME, endTime)
                         .build();
                 AckDatabase.getInstance(getApplicationContext()).uploadEventDao().insert(new UploadEvent(id, data));
                 return Result.success(data);

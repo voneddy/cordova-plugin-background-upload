@@ -1,3 +1,7 @@
+## [4.1.2](https://github.com/spoonconsulting/cordova-plugin-background-upload/compare/4.1.1...4.1.2) (2024-11-05)
+* **android:** Return upload start and end time in upload response
+* **iOS:** Return upload start and end time in upload response
+
 ## [4.1.1](https://github.com/spoonconsulting/cordova-plugin-background-upload/compare/4.1.0...4.1.1) (2024-09-23)
 * **android:** Update cordova plugin file version to 8.1.0
 * **iOS:** Update cordova plugin file version to 8.1.0

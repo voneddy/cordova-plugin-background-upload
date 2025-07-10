@@ -184,24 +184,25 @@ public final class UploadTask extends Worker {
             Request request = null;
             try {
                 request = createRequest();
-            } catch (FileNotFoundException e) {
-                FileTransferBackground.logMessageError("doWork: File not found !", e);
-                if(fileStream != null) {
-                    try {
-                        fileStream.close();
-                    } catch (IOException ioException) {
-                        throw new RuntimeException(ioException);
-                    }
-                }
-                return Result.success(new Data.Builder()
-                        .putString(KEY_OUTPUT_ID, id)
-                        .putBoolean(KEY_OUTPUT_IS_ERROR, true)
-                        .putString(KEY_OUTPUT_FAILURE_REASON, "File not found !")
-                        .putBoolean(KEY_OUTPUT_FAILURE_CANCELED, false)
-                        .build()
-                );
             } catch (NullPointerException e) {
                 return Result.retry();
+            } catch (Exception exception) {
+                final Data data = new Data.Builder()
+                        .putString(KEY_OUTPUT_ID, id)
+                        .putBoolean(KEY_OUTPUT_IS_ERROR, true)
+                        .putString(KEY_OUTPUT_FAILURE_REASON, exception.getMessage())
+                        .putBoolean(KEY_OUTPUT_FAILURE_CANCELED, true)
+                        .build();
+                    AckDatabase.getInstance(getApplicationContext()).pendingUploadDao().markAsUploaded(id);
+                    AckDatabase.getInstance(getApplicationContext()).uploadEventDao().insert(new UploadEvent(id, data));
+                    if(fileStream != null) {
+                        try {
+                            fileStream.close();
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                    return Result.success(data);
             }
 
             // Register me

@@ -50,12 +50,7 @@ FileTransferManager.prototype.startUpload = function (payload) {
   }
 
   var self = this;
-  var urlScheme = payload.filePath.split("://")[0];
-  if (urlScheme === "content") {
-    // android
-    exec(self.callback, null, 'FileTransferBackground', 'startUpload', [payload])
-  } else {
-    // ios
+  if (payload.platform === "ios") {
     window.resolveLocalFileSystemURL(payload.filePath, function (entry) {
       if (window.cordova.platformId !== 'android') {
           payload.filePath = new URL(entry.toURL()).pathname.replace(/^\/local-filesystem/, '')
@@ -64,6 +59,8 @@ FileTransferManager.prototype.startUpload = function (payload) {
     }, function () {
       self.callback({ id: payload.id, state: 'FAILED', error: 'File not found: ' + payload.filePath })
     })
+  } else {
+      exec(self.callback, null, 'FileTransferBackground', 'startUpload', [payload])
   }
 }
 

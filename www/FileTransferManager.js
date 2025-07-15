@@ -50,18 +50,7 @@ FileTransferManager.prototype.startUpload = function (payload) {
   }
 
   var self = this;
-  if (payload.platform === "ios") {
-    window.resolveLocalFileSystemURL(payload.filePath, function (entry) {
-      if (window.cordova.platformId !== 'android') {
-        payload.filePath = new URL(entry.toURL()).pathname.replace(/^\/local-filesystem/, '')
-      }
-      exec(self.callback, null, 'FileTransferBackground', 'startUpload', [payload])
-    }, function () {
-      self.callback({ id: payload.id, state: 'FAILED', error: 'File not found: ' + payload.filePath })
-    })
-  } else {
-    exec(self.callback, null, 'FileTransferBackground', 'startUpload', [payload])
-  }
+  exec(self.callback, null, 'FileTransferBackground', 'startUpload', [payload])
 }
 
 FileTransferManager.prototype.removeUpload = function (id, successCb, errorCb) {

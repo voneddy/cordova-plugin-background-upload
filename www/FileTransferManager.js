@@ -50,7 +50,7 @@ FileTransferManager.prototype.startUpload = function (payload) {
   }
 
   var self = this;
-  exec(self.callback, null, 'FileTransferBackground', 'startUpload', [payload])
+  exec(self.callback, null, 'FileTransferBackground', 'startUpload', [payload]);
 }
 
 FileTransferManager.prototype.removeUpload = function (id, successCb, errorCb) {

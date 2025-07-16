@@ -1,9 +1,9 @@
 {
-  "name": "@spoonconsulting/cordova-plugin-background-upload",
+  "name": "@voneddy/cordova-plugin-background-upload",
   "version": "7.0.0",
   "description": "Cordova plugin for uploading file in the background",
   "cordova": {
-    "id": "@spoonconsulting/cordova-plugin-background-upload",
+    "id": "@voneddy/cordova-plugin-background-upload",
     "platforms": [
       "android",
       "ios"
